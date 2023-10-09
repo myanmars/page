@@ -1,1 +1,278 @@
-Patient Record.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient's Personal History</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {margin: 0; 
+ background-color: yellow;
+ color: green;
+ display: flex;
+ align-items: center;
+ justify-content: center; 
+ box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+text-align: center;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 400px;
+            width: 60px; 
+            height: 60px; 
+            background-image: url('icon.png'); 
+            background-size: contain; 
+        }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+
+table th {
+    background-color: green;
+color: white;
+}
+
+label {margin-left: 20px;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="date"] {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 9px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+button {margin-left: 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}</style>
+</head>
+<body>
+    <h1>
+        <div class="logo"></div> <!-- Logo div -->
+        Patient Records
+    </h1>
+    <div class="container">
+        <h1>Aung Lan Gone Village</h1>
+        <table id="patientTable">
+            <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Name</th>
+                    <th>Condition</th>
+                    <th>Medication</th>
+                    <th>Contact</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="form">
+            <label for="serial">Serial Number:</label>
+            <input type="text" id="serial" required>
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="condition">Condition:</label>
+            <input type="text" id="condition" required>
+            <label for="medication">Medication:</label>
+            <input type="text" id="medication" required>
+            <label for="contact">Contact:</label>
+            <input type="text" id="contact" required>
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+            <button id="addButton">Add</button>
+        </div>
+    </div>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const patientTable = document.getElementById("patientTable");
+    const tbody = patientTable.querySelector("tbody");
+    const addButton = document.getElementById("addButton");
+    let editingRow = null; // Track the row being edited
+
+    addButton.addEventListener("click", addPatient);
+
+    // Load patient data from local storage when the page loads
+    loadPatients();
+
+    function addPatient() {
+        const serialInput = document.getElementById("serial");
+        const nameInput = document.getElementById("name");
+        const conditionInput = document.getElementById("condition");
+        const medicationInput = document.getElementById("medication");
+        const contactInput = document.getElementById("contact");
+        const dateInput = document.getElementById("date");
+
+        const serial = serialInput.value.trim();
+        const name = nameInput.value.trim();
+        const condition = conditionInput.value.trim();
+        const medication = medicationInput.value.trim();
+        const contact = contactInput.value.trim();
+        const date = dateInput.value.trim();
+
+        if (!serial || !name || !condition || !medication || !contact || !date) {
+            alert("All fields are required.");
+            return;
+        }
+
+        if (editingRow) {
+            // If we are in edit mode, update the existing row
+            updatePatient(editingRow, serial, name, condition, medication, contact, date);
+            editingRow = null; // Reset editing mode
+        } else {
+            // If not in edit mode, add a new row
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${serial}</td>
+                <td>${name}</td>
+                <td>${condition}</td>
+                <td>${medication}</td>
+                <td>${contact}</td>
+                <td>${date}</td>
+                <td>
+                    <button class="edit-button">Edit</button>
+                    <button class="remove-button">Remove</button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+            // Add event listeners for edit and remove buttons
+            const editButton = row.querySelector(".edit-button");
+            const removeButton = row.querySelector(".remove-button");
+
+            editButton.addEventListener("click", () => editPatient(row));
+            removeButton.addEventListener("click", () => removePatient(row));
+        }
+
+        // Clear input fields
+        serialInput.value = "";
+        nameInput.value = "";
+        conditionInput.value = "";
+        medicationInput.value = "";
+        contactInput.value = "";
+        dateInput.value = "";
+
+        // Save patient data to local storage
+        savePatients();
+    }
+
+    function editPatient(row) {
+        const cells = row.querySelectorAll("td");
+        const serial = cells[0].textContent;
+        const name = cells[1].textContent;
+        const condition = cells[2].textContent;
+        const medication = cells[3].textContent;
+        const contact = cells[4].textContent;
+        const date = cells[5].textContent;
+
+        // Populate the input fields with the existing data for editing
+        document.getElementById("serial").value = serial;
+        document.getElementById("name").value = name;
+        document.getElementById("condition").value = condition;
+        document.getElementById("medication").value = medication;
+        document.getElementById("contact").value = contact;
+        document.getElementById("date").value = date;
+
+        editingRow = row; // Set the editing row
+    }
+
+    function updatePatient(row, serial, name, condition, medication, contact, date) {
+        const cells = row.querySelectorAll("td");
+        cells[0].textContent = serial;
+        cells[1].textContent = name;
+        cells[2].textContent = condition;
+        cells[3].textContent = medication;
+        cells[4].textContent = contact;
+        cells[5].textContent = date;
+
+        editingRow = null; // Reset editing mode
+    }
+
+    function removePatient(row) {
+        row.remove();
+        // Remove the patient's data from local storage
+        savePatients();
+    }
+
+    function savePatients() {
+        const patients = [];
+        const rows = tbody.querySelectorAll("tr");
+
+        rows.forEach((row) => {
+            const cells = row.querySelectorAll("td");
+            patients.push({
+                serial: cells[0].textContent,
+                name: cells[1].textContent,
+                condition: cells[2].textContent,
+                medication: cells[3].textContent,
+                contact: cells[4].textContent,
+                date: cells[5].textContent,
+            });
+        });
+
+        localStorage.setItem("patients", JSON.stringify(patients));
+    }
+
+    function loadPatients() {
+        const patients = JSON.parse(localStorage.getItem("patients")) || [];
+
+        patients.forEach((patient) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${patient.serial}</td>
+                <td>${patient.name}</td>
+                <td>${patient.condition}</td>
+                <td>${patient.medication}</td>
+                <td>${patient.contact}</td>
+                <td>${patient.date}</td>
+                <td>
+                    <button class="edit-button">Edit</button>
+                    <button class="remove-button">Remove</button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+            // Add event listeners for edit and remove buttons
+            const editButton = row.querySelector(".edit-button");
+            const removeButton = row.querySelector(".remove-button");
+
+            editButton.addEventListener("click", () => editPatient(row));
+            removeButton.addEventListener("click", () => removePatient(row));
+        });
+    }
+});
+
+</script>
+</body>
+</html>
+
