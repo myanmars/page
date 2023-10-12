@@ -1,43 +1,43 @@
 const localVideo = document.getElementById('localVideo');
-const remoteVideo1 = document.getElementById('remoteVideo1');
-const remoteVideo2 = document.getElementById('remoteVideo2');
-const remoteVideo3 = document.getElementById('remoteVideo3');
-const remoteVideo4 = document.getElementById('remoteVideo4');
-const remoteVideo5 = document.getElementById('remoteVideo5');
+const remoteVideo = document.getElementById('remoteVideo');
 const startButton = document.getElementById('startButton');
-const stopButton = document.getElementById('stopButton');
-const shareScreenButton = document.getElementById('shareScreenButton');
+const hangupButton = document.getElementById('hangupButton');
 
 let localStream;
-let remoteStream1;
-let remoteStream2;
-let remoteStream3;
-let remoteStream4;
-let remoteStream5;
+let remoteStream;
+let pc;
 
-startButton.addEventListener('click', startVideo);
-stopButton.addEventListener('click', stopVideo);
-shareScreenButton.addEventListener('click', shareScreen);
+startButton.addEventListener('click', startVideoChat);
+hangupButton.addEventListener('click', hangUp);
 
-async function startVideo() {
+async function startVideoChat() {
     try {
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         localVideo.srcObject = localStream;
+
+        pc = new RTCPeerConnection();
+
+        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+        pc.ontrack = event => {
+            remoteStream = event.streams[0];
+            remoteVideo.srcObject = remoteStream;
+        };
+
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+
+        // Send the offer to the other user, e.g., using a signaling server
+
+        // Handle the answer from the other user and set it as the remote description
+
     } catch (error) {
-        console.error('Error starting video:', error);
+        console.error('Error starting video chat:', error);
     }
 }
 
-function stopVideo() {
-    localStream.getTracks().forEach(track => track.stop());
+function hangUp() {
+    pc.close();
     localVideo.srcObject = null;
-}
-
-async function shareScreen() {
-    try {
-        const screenStream = await navigator.mediaDevices.getDisplayMedia();
-        localVideo.srcObject = screenStream;
-    } catch (error) {
-        console.error('Error sharing screen:', error);
-    }
+    remoteVideo.srcObject = null;
 }
