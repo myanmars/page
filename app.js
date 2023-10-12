@@ -1,43 +1,41 @@
-const localVideo = document.getElementById('localVideo');
-const remoteVideo = document.getElementById('remoteVideo');
+const camera1 = document.getElementById('camera1');
+const camera2 = document.getElementById('camera2');
+const camera3 = document.getElementById('camera3');
 const startButton = document.getElementById('startButton');
-const hangupButton = document.getElementById('hangupButton');
+const stopButton = document.getElementById('stopButton');
 
-let localStream;
-let remoteStream;
-let pc;
+let stream1;
+let stream2;
+let stream3;
 
-startButton.addEventListener('click', startVideoChat);
-hangupButton.addEventListener('click', hangUp);
+startButton.addEventListener('click', startCameras);
+stopButton.addEventListener('click', stopCameras);
 
-async function startVideoChat() {
+async function startCameras() {
     try {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        localVideo.srcObject = localStream;
+        stream1 = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        stream2 = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        stream3 = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
-        pc = new RTCPeerConnection();
-
-        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-        pc.ontrack = event => {
-            remoteStream = event.streams[0];
-            remoteVideo.srcObject = remoteStream;
-        };
-
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-
-        // Send the offer to the other user, e.g., using a signaling server
-
-        // Handle the answer from the other user and set it as the remote description
-
+        camera1.srcObject = stream1;
+        camera2.srcObject = stream2;
+        camera3.srcObject = stream3;
     } catch (error) {
-        console.error('Error starting video chat:', error);
+        console.error('Error starting cameras:', error);
     }
 }
 
-function hangUp() {
-    pc.close();
-    localVideo.srcObject = null;
-    remoteVideo.srcObject = null;
+function stopCameras() {
+    if (stream1) {
+        stream1.getTracks().forEach(track => track.stop());
+        camera1.srcObject = null;
+    }
+    if (stream2) {
+        stream2.getTracks().forEach(track => track.stop());
+        camera2.srcObject = null;
+    }
+    if (stream3) {
+        stream3.getTracks().forEach(track => track.stop());
+        camera3.srcObject = null;
+    }
 }
