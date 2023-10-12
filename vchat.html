@@ -2,25 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Multi-Camera View</title>
+    <title>Multi-Participant Video Chat</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Multi-Camera View</h1>
-        <div class="video-grid">
-            <div class="video-container">
-                <video id="camera1" autoplay playsinline></video>
-            </div>
-            <div class="video-container">
-                <video id="camera2" autoplay playsinline></video>
-            </div>
-            <div class="video-container">
-                <video id="camera3" autoplay playsinline></video>
-            </div>
-        </div>
-        <button id="startButton">Start Cameras</button>
-        <button id="stopButton">Stop Cameras</button>
+        <h1>Multi-Participant Video Chat</h1>
+        <div class="video-grid" id="videoGrid"></div>
     </div>
     <script src="app.js"></script>
 </body>
