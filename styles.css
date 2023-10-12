@@ -5,7 +5,7 @@ body {
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     background-color: #fff;
     border-radius: 5px;
@@ -20,32 +20,13 @@ h1 {
 
 .video-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as needed */
     gap: 10px;
     margin: 20px 0;
-}
-
-.video-container {
-    position: relative;
 }
 
 video {
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
-
-button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-    margin: 10px 10px;
-}
-
-button:hover {
-    background-color: #2980b9;
 }
