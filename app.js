@@ -1,22 +1,5 @@
 // JavaScript (app.js)
 
-// Function to send a chat message
-function sendMessage() {
-    const chatInput = document.getElementById('chatInput');
-    const message = chatInput.value;
-    chatInput.value = ''; // Clear the input field
-
-    // Display the message in the chat box
-    const chatMessages = document.getElementById('chatMessages');
-    const messageElement = document.createElement('div');
-    messageElement.textContent = message;
-    chatMessages.appendChild(messageElement);
-}
-
-// Set up event listener for the "Send" button
-const sendButton = document.getElementById('sendButton');
-sendButton.addEventListener('click', sendMessage);
-
 // Function to start video streaming
 function startVideo() {
     // Access the local camera and microphone using WebRTC
@@ -30,6 +13,6 @@ function startVideo() {
         });
 }
 
-// Set up event listener for the "Start Video" button (if you have one)
+// Set up event listener for the "Start Video" button
 const startVideoButton = document.getElementById('startVideoButton');
 startVideoButton.addEventListener('click', startVideo);
