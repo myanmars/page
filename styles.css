@@ -18,11 +18,21 @@ h1 {
     margin-bottom: 20px;
 }
 
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.video-container {
+    position: relative;
+}
+
 video {
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin: 10px 0;
 }
 
 button {
