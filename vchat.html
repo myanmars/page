@@ -2,39 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Multi-View Video Chat</title>
+    <title>Simple Video Chat</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="video-grid">
-        <div class="video-container">
-            <video id="localVideo" autoplay playsinline></video>
-            <p>You</p>
-        </div>
-        <div class="video-container">
-            <video id="remoteVideo1" autoplay playsinline></video>
-            <p>Participant 1</p>
-        </div>
-        <div class="video-container">
-            <video id="remoteVideo2" autoplay playsinline></video>
-            <p>Participant 2</p>
-        </div>
-        <div class="video-container">
-            <video id="remoteVideo3" autoplay playsinline></video>
-            <p>Participant 3</p>
-        </div>
-        <div class="video-container">
-            <video id="remoteVideo4" autoplay playsinline></video>
-            <p>Participant 4</p>
-        </div>
-        <div class="video-container">
-            <video id="remoteVideo5" autoplay playsinline></video>
-            <p>Participant 5</p>
-        </div>
+    <div class="container">
+        <h1>Video Chat</h1>
+        <video id="localVideo" autoplay playsinline></video>
+        <video id="remoteVideo" autoplay playsinline></video>
+        <button id="startButton">Start Video Chat</button>
+        <button id="hangupButton">Hang Up</button>
     </div>
-    <button id="startButton">Start Video</button>
-    <button id="stopButton">Stop Video</button>
-    <button id="shareScreenButton">Share Screen</button>
     <script src="app.js"></script>
 </body>
 </html>
