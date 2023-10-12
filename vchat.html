@@ -2,17 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Video Chat Room</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Meeting Room</title>
 </head>
 <body>
     <div class="container">
-        <h1>Video Chat Room</h1>
-        <div id="localVideo"></div>
-        <div id="remoteVideos"></div>
+        <div class="video-container">
+            <video id="localVideo" autoplay playsinline></video>
+            <div class="remote-videos" id="remoteVideos">
+                <!-- Remote video feeds will appear here -->
+            </div>
+        </div>
+        <div class="chat-box" id="chatBox">
+            <div class="chat-messages" id="chatMessages">
+                <!-- Chat messages will appear here -->
+            </div>
+            <input type="text" id="chatInput" placeholder="Type a message...">
+            <button id="sendButton">Send</button>
+        </div>
     </div>
-    <script src="https://simplewebrtc.com/latest.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
