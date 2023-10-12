@@ -1,1 +1,1 @@
-<iframe src="https://vdo.ninja/?room=1" frameborder="0"></iframe>
+https://vdo.ninja/?room=1
