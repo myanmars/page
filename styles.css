@@ -2,31 +2,59 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     text-align: center;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: #fff;
-    border-radius: 5px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.video-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as needed */
-    gap: 10px;
-    margin: 20px 0;
+.video-container {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
 }
 
 video {
-    width: 100%;
+    max-width: 100%;
     border: 1px solid #ccc;
     border-radius: 5px;
+}
+
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.chat-messages {
+    height: 200px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
 }
