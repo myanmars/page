@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Live Video and Audio Recording</title>
-<style>
-       body {
+    <title>liveTV</title>
+    <style>
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -26,89 +25,27 @@
             color: #fff;
         }
 
-        .content {
-            padding: 20px;
+        .iframe-container {
+            position: relative;
+            overflow: hidden;
+            padding-top: 56.25%; /* 16:9 aspect ratio (change as needed) */
         }
 
-        /* Responsive styles for smaller screens (phones) */
-        @media screen and (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            .header {
-                padding: 10px;
-                font-size: 24px;
-            }
-            .content {
-                padding: 10px;
-                font-size: 16px;
-            }
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
-
     </style>
 </head>
-
 <body>
-
 <div class="container">
-    <h1 class="header">Live Video and Audio Recording</h1>
-    <center><video id="video" autoplay></video><br>
-    <button id="start-record">Start Recording</button>
-    <button id="stop-record" disabled>Stop Recording</button></center>
+    <h1 class="header">Livestream TV</h1>
+    <div class="iframe-container">
+        <iframe src="https://vdo.ninja/?view=1" width="640" height="480"></iframe>
+    </div>
 </div>
-    <script>
-        const video = document.getElementById("video");
-        const startRecordButton = document.getElementById("start-record");
-        const stopRecordButton = document.getElementById("stop-record");
-
-        let mediaStream;
-        let mediaRecorder;
-        let recordedChunks = [];
-
-        // Request access to the user's camera and microphone
-        async function initMedia() {
-            try {
-                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                video.srcObject = mediaStream;
-                mediaRecorder = new MediaRecorder(mediaStream);
-
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        recordedChunks.push(event.data);
-                    }
-                };
-
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: "video/webm" });
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = "recorded-video.webm";
-                    a.click();
-                };
-            } catch (error) {
-                console.error("Error accessing camera and microphone:", error);
-            }
-        }
-
-        startRecordButton.addEventListener("click", () => {
-            if (mediaRecorder && mediaStream) {
-                mediaRecorder.start();
-                startRecordButton.disabled = true;
-                stopRecordButton.disabled = false;
-            }
-        });
-
-        stopRecordButton.addEventListener("click", () => {
-            if (mediaRecorder.state === "recording") {
-                mediaRecorder.stop();
-                startRecordButton.disabled = false;
-                stopRecordButton.disabled = true;
-            }
-        });
-
-        initMedia();
-    </script>
 </body>
-
 </html>
