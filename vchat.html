@@ -38,14 +38,94 @@
             width: 100%;
             height: 100%;
         }
+
+        .record-buttons {
+            text-align: center;
+        }
+
+        .record-buttons button {
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1 class="header">Livestream TV</h1>
     <div class="iframe-container">
-        <iframe src="https://vdo.ninja/?view=1" width="640" height="480"></iframe>
+        <iframe id="video-iframe" src="https://vdo.ninja/?view=1" width="640" height="480"></iframe>
+    </div>
+    <div class="record-buttons">
+        <button id="start-record">Start Recording</button>
+        <button id="stop-record" disabled>Stop Recording</button>
     </div>
 </div>
+
+<script>
+    const videoIframe = document.getElementById("video-iframe");
+    const startRecordButton = document.getElementById("start-record");
+    const stopRecordButton = document.getElementById("stop-record");
+
+    let mediaStream;
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    // Handle button click to start recording
+    startRecordButton.addEventListener("click", () => {
+        if (mediaStream && videoIframe.contentWindow) {
+            mediaRecorder = new MediaRecorder(mediaStream);
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: "video/webm" });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "recorded-video.webm";
+                a.click();
+            };
+
+            mediaRecorder.start();
+            startRecordButton.disabled = true;
+            stopRecordButton.disabled = false;
+        }
+    });
+
+    // Handle button click to stop recording
+    stopRecordButton.addEventListener("click", () => {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+            startRecordButton disabled = false;
+            stopRecordButton.disabled = true;
+        }
+    });
+
+    // Request access to the user's camera and microphone
+    async function initMedia() {
+        try {
+            mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            const mediaStreamTracks = mediaStream.getTracks();
+
+            if (videoIframe.contentWindow) {
+                videoIframe.contentWindow.postMessage({ type: "initializeMedia", mediaStreamTracks }, "*");
+            }
+        } catch (error) {
+            console.error("Error accessing camera and microphone:", error);
+        }
+    }
+
+    // Initialize media when the iframe is loaded
+    videoIframe.addEventListener("load", initMedia);
+</script>
 </body>
 </html>
