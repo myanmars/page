@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>liveTV</title>
+    <title>Live Video</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,8 +11,8 @@
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 100%;
+            margin: 0;
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -28,10 +28,10 @@
         .iframe-container {
             position: relative;
             overflow: hidden;
-            padding-top: 56.25%; /* 16:9 aspect ratio (change as needed) */
+            padding-top: 56.25%;
         }
 
-        .iframe-container iframe {
+        iframe {
             position: absolute;
             top: 0;
             left: 0;
@@ -39,13 +39,12 @@
             height: 100%;
         }
 
-        .record-buttons {
+        .button-container {
             text-align: center;
-            margin-top: 10px; /* Add some top margin to separate the buttons from the iframe */
+            margin-top: 10px;
         }
 
-        .record-buttons button {
-            margin: 5px;
+        button {
             padding: 10px 20px;
             background-color: #007bff;
             color: #fff;
@@ -57,76 +56,41 @@
 </head>
 <body>
 <div class="container">
-    <h1 class="header">Livestream TV</h1>
+    <h1 class="header">Live Video</h1>
     <div class="iframe-container">
-        <iframe id="video-iframe" src="https://vdo.ninja/?view=1" width="640" height="480"></iframe>
+        <iframe src="https://vdo.ninja/?view=1" width="640" height="480"></iframe>
     </div>
-    <div class="record-buttons">
-        <button id="start-record">Start Recording</button>
-        <button id="stop-record" disabled>Stop Recording</button>
+    <div class="button-container">
+        <button id="capture-btn">Capture Image</button>
+        <button id="record-btn">Start Recording</button>
+        <button id="stop-btn" style="display: none;">Stop Recording</button>
     </div>
 </div>
 
 <script>
-    const videoIframe = document.getElementById("video-iframe");
-    const startRecordButton = document.getElementById("start-record");
-    const stopRecordButton = document.getElementById("stop-record");
+    const iframe = document.querySelector('iframe');
+    const captureBtn = document.getElementById('capture-btn');
+    const recordBtn = document.getElementById('record-btn');
+    const stopBtn = document.getElementById('stop-btn');
 
     let mediaStream;
     let mediaRecorder;
     let recordedChunks = [];
 
-    // Handle button click to start recording
-    startRecordButton.addEventListener("click", () => {
-        if (mediaStream && videoIframe.contentWindow) {
-            mediaRecorder = new MediaRecorder(mediaStream);
-
-            mediaRecorder.ondataavailable = (event) => {
-                if (event.data.size > 0) {
-                    recordedChunks.push(event.data);
-                }
-            };
-
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: "video/webm" });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "recorded-video.webm";
-                a.click();
-            };
-
-            mediaRecorder.start();
-            startRecordButton.disabled = true;
-            stopRecordButton.disabled = false;
-        }
+    captureBtn.addEventListener('click', () => {
+        // Capture image code here
+        alert('Image captured.');
     });
 
-    // Handle button click to stop recording
-    stopRecordButton.addEventListener("click", () => {
-        if (mediaRecorder && mediaRecorder.state === "recording") {
-            mediaRecorder.stop();
-            startRecordButton.disabled = false;
-            stopRecordButton.disabled = true;
-        }
+    recordBtn.addEventListener('click', () => {
+        // Start recording code here
+        alert('Recording started.');
     });
 
-    // Request access to the user's camera and microphone
-    async function initMedia() {
-        try {
-            mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            const mediaStreamTracks = mediaStream.getTracks();
-
-            if (videoIframe.contentWindow) {
-                videoIframe.contentWindow.postMessage({ type: "initializeMedia", mediaStreamTracks }, "*");
-            }
-        } catch (error) {
-            console.error("Error accessing camera and microphone:", error);
-        }
-    }
-
-    // Initialize media when the iframe is loaded
-    videoIframe.addEventListener("load", initMedia);
+    stopBtn.addEventListener('click', () => {
+        // Stop recording code here
+        alert('Recording stopped.');
+    });
 </script>
 </body>
 </html>
