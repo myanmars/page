@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Live Video</title>
+    <title>Auto Video Recorder</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,9 +13,8 @@
         .container {
             max-width: 100%;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .header {
@@ -38,58 +37,35 @@
             width: 100%;
             height: 100%;
         }
-
-        .button-container {
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1 class="header">Live Video</h1>
     <div class="iframe-container">
         <iframe src="https://vdo.ninja/?view=1" width="640" height="480"></iframe>
     </div>
-    <div class="button-container">
-        <button id="capture-btn">Capture Image</button>
-        <button id="record-btn">Start Recording</button>
-        <button id="stop-btn" style="display: none;">Stop Recording</button>
-    </div>
 </div>
-
 <script>
     const iframe = document.querySelector('iframe');
-    const captureBtn = document.getElementById('capture-btn');
-    const recordBtn = document.getElementById('record-btn');
-    const stopBtn = document.getElementById('stop-btn');
+    const mediaConfig = { video: true, audio: true };
 
-    let mediaStream;
-    let mediaRecorder;
-    let recordedChunks = [];
+    // Function to handle media stream
+    const handleMedia = async () => {
+        try {
+            const mediaStream = await navigator.mediaDevices.getUserMedia(mediaConfig);
+            const mediaStreamTracks = mediaStream.getTracks();
+            iframe.contentWindow.postMessage({ type: 'initializeMedia', mediaStreamTracks }, '*');
+        } catch (error) {
+            console.error('Error accessing camera and microphone:', error);
+        }
+    };
 
-    captureBtn.addEventListener('click', () => {
-        // Capture image code here
-        alert('Image captured.');
-    });
-
-    recordBtn.addEventListener('click', () => {
-        // Start recording code here
-        alert('Recording started.');
-    });
-
-    stopBtn.addEventListener('click', () => {
-        // Stop recording code here
-        alert('Recording stopped.');
+    // Handle iframe load
+    iframe.addEventListener('load', () => {
+        handleMedia();
+        iframe.contentWindow.addEventListener('beforeunload', () => {
+            handleMedia();
+        });
     });
 </script>
 </body>
