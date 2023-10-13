@@ -1,15 +1,8 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>My Blog</title>
+    <title>Own Blog</title>
     <style>
-        /* Add your CSS styles here */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: lightblue;
-            margin: 0;
-            padding: 0;
-        }
-
         .container {
             max-width: 100%;
             margin: 0 auto;
@@ -42,127 +35,121 @@
             border: none;
             cursor: pointer;
         }
+
+        /* New styles for the buttons */
+        .new-btn {
+            background-color: green;
+            color: white;
+        }
+
+        .edit-btn {
+            background-color: blue;
+            color: white;
+        }
+
+        .save-btn {
+            background-color: orange;
+            color: white;
+        }
+
+        .remove-btn {
+            background-color: red;
+            color: white;
+        }
+
 h1 {background-color: #a20200; color: yellow; 
 text-align: center; padding: 20px; margin: 0; border-radius: 50px;
 font-size: 50px;}
-h3 {background-color: blue; color: white; text-align: center; padding: 20px;
-margin: 0; border-radius: 50px; text-align: center;}
+
+div{text-align: left; margin: 20px;}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>General Notes</h1>
+        <h1>Own Blog</h1>
 
-        <h3>Localstorage ဖြင့် ဖန်တီးထားသည့်အတွက် ကိုယ်ရေးထည့်လိုက်သည့်မှတ်စုသည် အခြား devices များမှ ဝင်ကြည့်ရှု၍ မရနိုင်ပါ။</h3>
-        <button id="new-post-button" class="btn">New Post</button>
-        <button id="edit-post-button" class="btn">Edit Post</button>
+<div id="blog-posts">
 
-        <form id="post-form" style="display: none;">
+        </div>
+        <form id="post-form">
             <label for="title">Title:</label>
             <input type="text" id="title" required>
             <label for="author">Author:</label>
             <input type="text" id="author" required>
             <label for="content">Content:</label>
             <textarea id="content" required></textarea>
-            <button type="submit" class="btn">Save Post</button>
+            <button type="submit" class="btn new-btn">New Post</button>
         </form>
-
-        <div id="blog-posts">
-        </div>
     </div>
 
     <script>
         const postForm = document.getElementById("post-form");
-        const newPostButton = document.getElementById("new-post-button");
-        const editPostButton = document.getElementById("edit-post-button");
         const blogPostsContainer = document.getElementById("blog-posts");
+        let editingKey = null;
 
-        function displayBlogPosts() {
-            blogPostsContainer.innerHTML = ''; // Clear existing posts
-            const storedPosts = Object.keys(localStorage);
+        // Function to display saved posts
+        function displaySavedPosts() {
+            blogPostsContainer.innerHTML = '';
 
-            if (storedPosts.length > 0) {
-                storedPosts.forEach((key) => {
-                    if (key !== 'blogPost') {
-                        const post = JSON.parse(localStorage.getItem(key));
-                        const postDiv = document.createElement("div");
-                        postDiv.classList.add("blog-post");
-                        postDiv.innerHTML = `
-                            <h2>${post.title}</h2>
-                            <p class="post-meta">Published on ${new Date().toDateString()} by ${post.author}</p>
-                            <p class="post-content">${post.body}</p>
-                            <button class="btn remove-post" data-key="${key}">Remove</button>
-                            <button class="btn edit-post" data-key="${key}">Edit</button>
-                        `;
-                        blogPostsContainer.appendChild(postDiv);
-                    }
-                });
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key !== 'blogPost') {
+                    const post = JSON.parse(localStorage.getItem(key));
+                    const postDiv = document.createElement("div");
+                    postDiv.classList.add("blog-post");
+                    postDiv.innerHTML = `
+                        <h2>${post.title}</h2>
+                        <p class="post-meta">Published by ${post.author}</p>
+                        <p class="post-content">${post.body}</p>
+                        <button class="btn remove-btn" data-key="${key}">Remove</button>
+                        <button class="btn edit-btn" data-key="${key}">Edit</button>
+                    `;
+                    blogPostsContainer.appendChild(postDiv);
+                }
             }
         }
 
-        function removeBlogPost(key) {
-            localStorage.removeItem(key);
-            displayBlogPosts();
-        }
+        displaySavedPosts();
 
-        function editBlogPost(key) {
-            const post = JSON.parse(localStorage.getItem(key));
-            document.getElementById("title").value = post.title;
-            document.getElementById("author").value = post.author;
-            document.getElementById("content").value = post.body;
-            editPostButton.style.display = "block";
-            postForm.dataset.editKey = key;
-        }
-
-        newPostButton.addEventListener("click", function () {
-            postForm.style.display = "block";
-            postForm.reset();
-            editPostButton.style.display = "none";
-        });
-
-        editPostButton.addEventListener("click", function () {
-            const editKey = postForm.dataset.editKey;
-            if (editKey) {
-                const title = document.getElementById("title").value;
-                const author = document.getElementById("author").value;
-                const content = document.getElementById("content").value;
-                const post = { title, author, body: content };
-                localStorage.setItem(editKey, JSON.stringify(post));
-                displayBlogPosts();
-                postForm.style.display = "none";
-                editPostButton.style.display = "block";
-                delete postForm.dataset.editKey;
-            } else {
-                alert("No post selected for editing.");
-            }
-        });
-
-        const postFormSubmit = document.getElementById("post-form");
-        postFormSubmit.addEventListener("submit", function (e) {
+        postForm.addEventListener("submit", function (e) {
             e.preventDefault();
+
             const title = document.getElementById("title").value;
             const author = document.getElementById("author").value;
             const content = document.getElementById("content").value;
-            const post = { title, author, body: content };
-            const timestamp = new Date().getTime();
-            localStorage.setItem(`post-${timestamp}`, JSON.stringify(post));
-            displayBlogPosts();
-            postForm.style.display = "none";
-            editPostButton.style.display = "block";
+
+            if (editingKey) {
+                // Edit existing post
+                const post = { title, author, body: content };
+                localStorage.setItem(editingKey, JSON.stringify(post));
+                editingKey = null;
+            } else {
+                // Generate a unique key for each post using the current timestamp
+                const key = `post-${new Date().getTime()}`;
+                const post = { title, author, body: content };
+                localStorage.setItem(key, JSON.stringify(post));
+            }
+
+            displaySavedPosts();
+
+            // Clear the form
+            postForm.reset();
         });
 
-        // Event delegation for removing and editing posts
         blogPostsContainer.addEventListener("click", function (event) {
-            if (event.target.classList.contains("remove-post")) {
-                removeBlogPost(event.target.getAttribute("data-key"));
-            }
-            if (event.target.classList.contains("edit-post")) {
-                editBlogPost(event.target.getAttribute("data-key"));
+            if (event.target.classList.contains("remove-btn")) {
+                const key = event.target.dataset.key;
+                localStorage.removeItem(key);
+                displaySavedPosts();
+            } else if (event.target.classList.contains("edit-btn")) {
+                const key = event.target.dataset.key;
+                editingKey = key;
+                const post = JSON.parse(localStorage.getItem(key));
+                document.getElementById("title").value = post.title;
+                document.getElementById("author").value = post.author;
+                document.getElementById("content").value = post.body;
             }
         });
-
-        // Initial display (load and display all stored posts)
-        displayBlogPosts();
     </script>
 </body>
 </html>
