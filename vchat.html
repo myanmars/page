@@ -1,25 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Camera and Chat</title>
+    <title>Live Video and Audio Recording</title>
+<style>
+       body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        /* Responsive styles for smaller screens (phones) */
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            .header {
+                padding: 10px;
+                font-size: 24px;
+            }
+            .content {
+                padding: 10px;
+                font-size: 16px;
+            }
+        }
+
+    </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="video-container">
-            <video id="localVideo" autoplay playsinline></video>
-        </div>
-        <div class="chat-box">
-            <div class="chat-messages" id="chatMessages">
-                <!-- Chat messages will appear here -->
-            </div>
-            <input type="text" id="chatInput" placeholder="Type a message...">
-            <button id="sendButton">Send</button>
-            <button id="startVideoButton">Start Video</button> <!-- Add a button to start the camera -->
-        </div>
-    </div>
-    <script src="app.js"></script>
+
+<div class="container">
+    <h1 class="header">Live Video and Audio Recording</h1>
+    <center><video id="video" autoplay></video><br>
+    <button id="start-record">Start Recording</button>
+    <button id="stop-record" disabled>Stop Recording</button></center>
+</div>
+    <script>
+        const video = document.getElementById("video");
+        const startRecordButton = document.getElementById("start-record");
+        const stopRecordButton = document.getElementById("stop-record");
+
+        let mediaStream;
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        // Request access to the user's camera and microphone
+        async function initMedia() {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                video.srcObject = mediaStream;
+                mediaRecorder = new MediaRecorder(mediaStream);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: "video/webm" });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "recorded-video.webm";
+                    a.click();
+                };
+            } catch (error) {
+                console.error("Error accessing camera and microphone:", error);
+            }
+        }
+
+        startRecordButton.addEventListener("click", () => {
+            if (mediaRecorder && mediaStream) {
+                mediaRecorder.start();
+                startRecordButton.disabled = true;
+                stopRecordButton.disabled = false;
+            }
+        });
+
+        stopRecordButton.addEventListener("click", () => {
+            if (mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+                startRecordButton.disabled = false;
+                stopRecordButton.disabled = true;
+            }
+        });
+
+        initMedia();
+    </script>
 </body>
+
 </html>
