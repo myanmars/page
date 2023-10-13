@@ -51,9 +51,9 @@ margin: 0; border-radius: 50px; text-align: center;}
 </head>
 <body>
     <div class="container">
-        <h1>Myanmars Blog Post</h1>
+        <h1>General Notes</h1>
 
-        <h3>Create or Edit a Blog Post</h3>
+        <h3>Localstorage ဖြင့် ဖန်တီးထားသည့်အတွက် ကိုယ်ရေးထည့်လိုက်သည့်မှတ်စုသည် အခြား devices များမှ ဝင်ကြည့်ရှု၍ မရနိုင်ပါ။</h3>
         <button id="new-post-button" class="btn">New Post</button>
         <button id="edit-post-button" class="btn">Edit Post</button>
 
