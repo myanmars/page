@@ -1,154 +1,91 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Own Blog</title>
-    <style>
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-        }
+  <title>Web Programming</title>
+  <style>
+    body {
+      background-color: lightyellow;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .blog-post {
-            background-color: lightyellow;
-            border: 1px solid #eee;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
+    /* New styles for the columns */
+    .columns {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
 
-        .blog-post h2 {
-            font-size: 24px;
-            margin: 0;
-        }
+    .column {
+      flex: 1;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid #ccc; /* Add a border to all columns */
+    }
 
-        .blog-post .post-meta {
-            font-style: italic;
-        }
+    /* Styles for different sizes */
+    .small-image {
+      max-width: 100px; /* Adjust the image size for the left column */
+    }
 
-        .blog-post .post-content {
-            margin-top: 10px;
-        }
+    .normal-image {
+      max-width: 200px; /* Adjust the image size for the center column */
+    }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-        }
+    .normal-post {
+      font-size: 16px; /* Use a normal font size for posts */
+      border: 1px solid #ccc; /* Add a border to post images */
+      padding: 10px;
+    }
 
-        /* New styles for the buttons */
-        .new-btn {
-            background-color: green;
-            color: white;
-        }
+    .normal-links {
+      font-size: 16px;
+    }
 
-        .edit-btn {
-            background-color: blue;
-            color: white;
-        }
-
-        .save-btn {
-            background-color: orange;
-            color: white;
-        }
-
-        .remove-btn {
-            background-color: red;
-            color: white;
-        }
-
-h1 {background-color: #a20200; color: yellow; 
-text-align: center; padding: 20px; margin: 0; border-radius: 50px;
-font-size: 50px;}
-
-div{text-align: left; margin: 20px;}
-    </style>
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Own Blog</h1>
-
-<div id="blog-posts">
-
-        </div>
-        <form id="post-form">
-            <label for="title">Title:</label>
-            <input type="text" id="title" required>
-            <label for="author">Author:</label>
-            <input type="text" id="author" required>
-            <label for="content">Content:</label>
-            <textarea id="content" required></textarea>
-            <button type="submit" class="btn new-btn">New Post</button>
-        </form>
+  <div class="columns">
+    <div class="column">
+      <!-- Left column for small images -->
+      <h2>Images Column</h2>
+      <img class="small-image" src="1.jpg" alt="Image 1">
+      <p>
+        <strong>Image Title 1:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      </p>
+      <img class="small-image" src="1.jpg" alt="Image 2">
+      <p>
+        <strong>Image Title 2:</strong> Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      </p>
     </div>
 
-    <script>
-        const postForm = document.getElementById("post-form");
-        const blogPostsContainer = document.getElementById("blog-posts");
-        let editingKey = null;
+    <div class="column">
+      <!-- Center column for normal-sized posts with a border -->
+      <h2>Posts Column</h2>
+      <div class="normal-post">
+        <img class="normal-image" src="1.jpg" alt="Post Image 1"> <!-- Adjust image size -->
+        <p>
+          <strong>Post Title 1:</strong> Post content goes here.
+        </p>
+      </div>
+      <div class="normal-post">
+        <img class="normal-image" src="1.jpg" alt="Post Image 2"> <!-- Adjust image size -->
+        <p>
+          <strong>Post Title 2:</strong> Post content goes here.
+        </p>
+      </div>
+    </div>
 
-        // Function to display saved posts
-        function displaySavedPosts() {
-            blogPostsContainer.innerHTML = '';
-
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key !== 'blogPost') {
-                    const post = JSON.parse(localStorage.getItem(key));
-                    const postDiv = document.createElement("div");
-                    postDiv.classList.add("blog-post");
-                    postDiv.innerHTML = `
-                        <h2>${post.title}</h2>
-                        <p class="post-meta">Published by ${post.author}</p>
-                        <p class="post-content">${post.body}</p>
-                        <button class="btn remove-btn" data-key="${key}">Remove</button>
-                        <button class="btn edit-btn" data-key="${key}">Edit</button>
-                    `;
-                    blogPostsContainer.appendChild(postDiv);
-                }
-            }
-        }
-
-        displaySavedPosts();
-
-        postForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            const title = document.getElementById("title").value;
-            const author = document.getElementById("author").value;
-            const content = document.getElementById("content").value;
-
-            if (editingKey) {
-                // Edit existing post
-                const post = { title, author, body: content };
-                localStorage.setItem(editingKey, JSON.stringify(post));
-                editingKey = null;
-            } else {
-                // Generate a unique key for each post using the current timestamp
-                const key = `post-${new Date().getTime()}`;
-                const post = { title, author, body: content };
-                localStorage.setItem(key, JSON.stringify(post));
-            }
-
-            displaySavedPosts();
-
-            // Clear the form
-            postForm.reset();
-        });
-
-        blogPostsContainer.addEventListener("click", function (event) {
-            if (event.target.classList.contains("remove-btn")) {
-                const key = event.target.dataset.key;
-                localStorage.removeItem(key);
-                displaySavedPosts();
-            } else if (event.target.classList.contains("edit-btn")) {
-                const key = event.target.dataset.key;
-                editingKey = key;
-                const post = JSON.parse(localStorage.getItem(key));
-                document.getElementById("title").value = post.title;
-                document.getElementById("author").value = post.author;
-                document.getElementById("content").value = post.body;
-            }
-        });
-    </script>
+    <div class="column">
+      <!-- Right column for normal-sized links -->
+      <h2>Links Column</h2>
+      <ul class="normal-links">
+        <li><a href="www.shwehinnthar.com">Shwehinnthar</a></li>
+        <li><a href="www.myanmars.site">Myanmars</a></li>
+      </ul>
+    </div>
+  </div>
 </body>
 </html>
